@@ -1,7 +1,7 @@
 # 16SrDNA_stats
 
 # Getting Started
-Siply copy and paste the 16S_rDNA_script_run file into the directory containing
+Simply copy and paste the 16S_rDNA_script_run file into the directory containing
 the 16S_rDNA_script.R or 16S_rDNA_script_edt_compound_gene.R, otu_table_tax.spf, 
 and mapping_file.txt files.
 
