@@ -28,9 +28,13 @@ Contribution are welcome and should be emailed to tiagofalconlopes at gmail . co
 # Authors
 Development:
 Tiago Falcon - Nucleo de Bioinformatica CPE/HCPA
+
 Review and testing:
 Martiela Freitas - Nucleo de Bioinformatica CPE/HCPA
+
 Ana C. Mello - Nucleo de Bioinformatica CPE/HCPA
+
 Laura Coutinho - Nucleo de Bioinformatica CPE/HCPA
+
 Supervision:
 Ursula Matte - Nucleo de Bioinformatica CPE/HCPA
