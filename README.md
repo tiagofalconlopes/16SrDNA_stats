@@ -41,3 +41,7 @@ Laura Coutinho - Nucleo de Bioinformatica CPE/HCPA
 Supervision:
 
 Ursula Matte - Nucleo de Bioinformatica CPE/HCPA
+
+# Acknowledgments
+We thank for the fellowship from Programa Nacional de Pós-Doutorado (PNPD) CAPES/HCPA to TF (Process no.: 88887.160608/2017-00), and Conselho Nacional de Desenvolvimento Científico e Tecnológico (CNPq) for the fellowships provided to MF (Process no.: 140002/2018-9) and UM (Process no.: 307038/2015-7). This study was financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil (CAPES) - Finance Code 001. We also thank FIPE/HCPA for financial support.
+
