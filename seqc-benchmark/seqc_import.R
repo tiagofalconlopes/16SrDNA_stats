@@ -37,18 +37,59 @@ row.names(qPCR_exp)<-paste(row.names(qPCR_exp),qPCR_exp$Symbol,sep = '_')
 # heatmap(as.matrix(housekeepers_expr[,3:18]),Colv = NA)
 
 #https://bitesizebio.com/24894/4-easy-steps-to-analyze-your-qpcr-data-using-double-delta-ct-analysis/
-DDqCT<-function(data, housekeeper, groups){
+
+
+
+DqCT<-function(data, housekeeper){
   hk_row<-grep(housekeeper,data$Symbol) #Retrieve the row(s) for the housekeeper
+  norm_data<-data.frame(Symbol=data[,"Symbol"])
+  for(column in (3:ncol(data))){
+    hk_average<-mean(data[hk_row,column])
+    new_column<-c()
+    for(gene in (1:nrow(data))){
+      new_column<-c(new_column,(data[gene,column]-hk_average))
+    }
+    norm_data[,colnames(data)[column]]<-new_column
+}
+  return(norm_data)
+}
+
+
+norm_data<-DqCT(qPCR_exp, "GAPDHS")
+
+DE_analysis<-function(data, groups){
+  
+  #Create a df with group name | Sample idxs
+  groups_mapping<-data.frame(group=character(),idx=numeric())
   for(gr in groups){
     group_samples<-grep(gr, colnames(data)) #Retrieve the column for the samples
     group_samples = group_samples[!(group_samples %in% c(1:2))] #Remove 2 first cols Entrez/Symbol
-    hk_average<-colMeans(data[hk_row,group_samples])
-    hk_average<-mean(hk_average)
-    #Calculate mean of each gene - mean of the HK
-    data[,paste("deltaCt",gr)]<-apply(data[,group_samples], MARGIN=1,hk_average=hk_average,FUN = function(x, hk_average){mean(x)-hk_average})
+    groups_mapping<-rbind(groups_mapping,data.frame(gr,group_samples))  
   }
-  return(data)
+  
+  #Perform the ANOVA analysis for each gene
+  n_col<-(factorial(length(groups))/(factorial(length(groups)-2)*2))+3
+  comparisonsDF<-data.frame(matrix(NA,  ncol = n_col))
+  comparisonsDF<-comparisonsDF[-1,]
+  
+  for(gene in c(1:nrow(data))){
+    temp_df<-data.frame(group=character(),idx=numeric(),expr=numeric())
+    temp_vec<-data[gene,groups_mapping$group_samples]
+    temp_df<-cbind(groups_mapping,t(temp_vec))
+    
+    aov_results<-aov(temp_df[,3] ~ temp_df$gr)
+    aov_p<-summary(aov_results)[[1]][["Pr(>F)"]][1]
+    
+    tukres<-TukeyHSD(aov_results)
+    tukey_fdr<-p.adjust(tukres$`temp_df$gr`[,4],method='fdr')
+    newrow<-data[gene,c(1,2)]
+    newrow<-c(newrow,aov_p)
+    newrow<-c(newrow,tukey_fdr)
+    comparisonsDF<-rbind(setNames(comparisonsDF,names(newrow)),newrow)
+  }
+  comparisonsDF$p_adj<-p.adjust(comparisonsDF[,3],method='fdr')
+  return(comparisonsDF)
 }
 
-norm_data<-DDqCT(qPCR_exp, "UBC", sample_lets)
+DE<-DE_analysis(norm_data, groups = sample_lets)
 
